@@ -3,7 +3,7 @@ CREATE DATABASE TurnosDB;
 USE TurnosDB;
 
 -- Tabla: Profesional_Médico
-CREATE TABLE Profesional_Medico (
+CREATE TABLE Profesional(
     ID_Profesional INT AUTO_INCREMENT PRIMARY KEY,
     Nombre VARCHAR(255) NOT NULL,
     Apellido VARCHAR(255) NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE Turno (
     ID_Profesional INT NOT NULL,
     CONSTRAINT UC_FechaHoraProfesional UNIQUE (Fecha, Hora, ID_Profesional),
     FOREIGN KEY (ID_Paciente) REFERENCES Paciente(ID_Paciente),
-    FOREIGN KEY (ID_Profesional) REFERENCES Profesional_Medico(ID_Profesional)
+    FOREIGN KEY (ID_Profesional) REFERENCES Profesional(ID_Profesional)
 );
 
 -- Tabla: Disponibilidad
@@ -44,7 +44,7 @@ CREATE TABLE Disponibilidad (
     Hora_Inicio TIME NOT NULL,
     Hora_Fin TIME NOT NULL,
     ID_Profesional INT NOT NULL,
-    FOREIGN KEY (ID_Profesional) REFERENCES Profesional_Medico(ID_Profesional)
+    FOREIGN KEY (ID_Profesional) REFERENCES Profesional(ID_Profesional)
 );
 
 -- Tabla: Obra_Social
@@ -58,7 +58,7 @@ CREATE TABLE Profesional_ObraSocial (
     ID_Profesional_ObraSocial INT AUTO_INCREMENT PRIMARY KEY,
     ID_Profesional INT NOT NULL,
     ID_ObraSocial INT NOT NULL,
-    FOREIGN KEY (ID_Profesional) REFERENCES Profesional_Medico(ID_Profesional),
+    FOREIGN KEY (ID_Profesional) REFERENCES Profesional(ID_Profesional),
     FOREIGN KEY (ID_ObraSocial) REFERENCES Obra_Social(ID_ObraSocial)
 );
 
@@ -81,5 +81,5 @@ CREATE TABLE Realizado_por (
     ID_Profesional INT,
     FOREIGN KEY (ID_Cancelacion) REFERENCES Cancelacion(ID_Cancelacion),
     FOREIGN KEY (ID_Paciente) REFERENCES Paciente(ID_Paciente),
-    FOREIGN KEY (ID_Profesional) REFERENCES Profesional_Medico(ID_Profesional)
+    FOREIGN KEY (ID_Profesional) REFERENCES Profesional(ID_Profesional)
 );
