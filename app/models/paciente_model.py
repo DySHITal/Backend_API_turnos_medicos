@@ -9,6 +9,8 @@ class Paciente:
         self.nombre = kwargs.get('nombre')
         self.apellido = kwargs.get('apellido')
         self.correo = kwargs.get('correo')
+        self.dni = kwargs.get('dni')
+        self.obra_social = kwargs.get('obra_social')
         self.contrasena = kwargs.get('contrasena')
 
     def serialize(self):
@@ -20,6 +22,8 @@ class Paciente:
             'nombre': self.nombre,
             'apellido': self.apellido,
             'correo': self.correo,
+            'dni': self.dni,
+            'obra_social': self.obra_social,
             'contrasena': self.contrasena
         }
 
@@ -62,8 +66,8 @@ class Paciente:
         bcrypt = Bcrypt()
         try:
             hashed_password = bcrypt.generate_password_hash(paciente.contrasena).decode('utf-8')
-            query="""INSERT INTO turnosDB.paciente(nombre, apellido, correo, contrasena)
-            VALUES(%(nombre)s, %(apellido)s, %(correo)s, %(contrasena)s);"""
+            query="""INSERT INTO turnosDB.paciente(nombre, apellido, correo, dni, obra_social, contrasena)
+            VALUES(%(nombre)s, %(apellido)s, %(correo)s, %(dni)s, %(obra_social)s, %(contrasena)s);"""
             params = paciente.__dict__
             params['contrasena'] = hashed_password
             DatabaseConnection.execute_query(query, params=params)
@@ -89,7 +93,7 @@ class Paciente:
     @classmethod
     def get_info(cls, id_paciente):
         try:
-            query = 'SELECT nombre, apellido, correo FROM paciente WHERE id_paciente = %s'
+            query = 'SELECT nombre, apellido, correo, dni, obra_social FROM paciente WHERE id_paciente = %s'
             result = DatabaseConnection.fetch_one(query, (id_paciente,))
             if result is not None:
                 DatabaseConnection.close_connection()

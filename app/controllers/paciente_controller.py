@@ -25,6 +25,8 @@ class PacienteController:
             nombre = data.get('nombre'),
             apellido = data.get('apellido'),
             correo = data.get('correo'),
+            dni = data.get('dni'),
+            obra_social = data.get('obra_social'),
             contrasena = data.get('contrasena')
         )
         if Paciente.is_registered(usuario):
