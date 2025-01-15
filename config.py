@@ -4,6 +4,7 @@ class Config:
     config = dotenv_values('.env')
 
     SECRET_KEY = config['SECRET_KEY']
+    JWT_TOKEN_LOCATION = ['headers']
     SERVER_NAME = "127.0.0.1:5000"
     DEBUG = True
 

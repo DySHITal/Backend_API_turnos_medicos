@@ -1,9 +1,10 @@
 from flask import Flask
+from flask_jwt_extended import JWTManager
 from config import Config
 from flask_cors import CORS
-# from .routes.auth_bp import auth_bp
-# from .routes.user_bp import user_bp
-# from .routes.chat_bp import chat_bp
+from .routes.auth_bp import auth_bp
+from .routes.paciente_bp import paciente_bp
+from .routes.profesional_bp import profesional_bp
 # from .routes.canales_bp import canal_bp
 from .database import DatabaseConnection
 
@@ -13,8 +14,9 @@ def init_app():
     CORS(app,origins='http://127.0.0.1:5500', supports_credentials=True)
     app.config.from_object(Config)
     DatabaseConnection.set_config(app.config)
-    # app.register_blueprint(auth_bp)
-    # app.register_blueprint(user_bp)
-    # app.register_blueprint(chat_bp)
+    JWTManager(app)
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(paciente_bp)
+    app.register_blueprint(profesional_bp)
     # app.register_blueprint(canal_bp)
     return app
