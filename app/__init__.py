@@ -11,7 +11,8 @@ from .database import DatabaseConnection
 def init_app():
     """Crea y configura la aplicación Flask"""
     app = Flask(__name__, static_folder=Config.STATIC_FOLDER, template_folder=Config.TEMPLATE_FOLDER)
-    CORS(app,origins='http://127.0.0.1:5500', supports_credentials=True)
+    # CORS(app,origins='http://127.0.0.1:5500', supports_credentials=True)
+    CORS(app, resources={r"/*": {"origins": "*"}})
     app.config.from_object(Config)
     DatabaseConnection.set_config(app.config)
     JWTManager(app)
