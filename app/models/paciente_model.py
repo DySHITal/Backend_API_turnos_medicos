@@ -166,7 +166,7 @@ class Paciente:
 
             # Registrar la cancelación
             registrar_cancelacion_query = '''
-            INSERT INTO turnosDB.cancelaciones (id_turno, id_realizado_por, fecha_cancelacion, razon)
+            INSERT INTO turnosDB.cancelacion (id_turno, id_realizado_por, fecha_cancelacion, razon)
             VALUES (%s, %s, NOW(), %s)
             '''
             params = (id_turno, id_paciente, razon_cancelacion)
@@ -178,9 +178,9 @@ class Paciente:
     def get_turnos_paciente(cls, id_paciente):
         try:
             query = '''
-            SELECT t.id_turno, t.fecha, t.hora, t.estado, p.nombre, p.apellido
+            SELECT t.id_turno, t.fecha, TIME_FORMAT(t.Hora, "%H:%I:%S") AS Hora, t.estado, p.nombre, p.apellido
             FROM turnosDB.turno t
-            JOIN turnosDB.profesionales p ON t.id_profesional = p.id_profesional
+            JOIN turnosDB.profesional p ON t.id_profesional = p.id_profesional
             WHERE t.id_paciente = %s
             '''
             result = DatabaseConnection.fetch_all(query, (id_paciente,))
