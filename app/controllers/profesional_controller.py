@@ -2,6 +2,7 @@ from ..models.profesional_model import Profesional
 from ..models.paciente_model import Paciente
 from flask import request, session, jsonify
 import os
+from ..utils.auth_decorador import requiere_autenticacion
 class ProfesionalController:
     
     @classmethod
@@ -31,7 +32,13 @@ class ProfesionalController:
         except Exception as e:
             return jsonify({'msg': 'Error al cancelar el turno', 'error': str(e)}), 400
         
-    @classmethod
-    def getTurnos(cls, id_paciente):
-        turnos = Profesional.getTurnos(id_paciente)
+    @staticmethod
+    @requiere_autenticacion
+    def getTurnos(id_usuario):
+        turnos = Profesional.turnos_reservados(id_usuario)
         return jsonify(turnos), 200
+    
+    @classmethod
+    def getProfesionales(cls):
+        profesionales = Profesional.get_profesionales()
+        return [profesional for profesional in profesionales], 200

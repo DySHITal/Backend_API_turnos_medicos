@@ -16,7 +16,7 @@ class Profesional:
         Returns:
             dict: Object representation '''
         return {
-            'id_paciente': self.id_paciente,
+            'id_profesional': self.id_profesional,
             'nombre': self.nombre,
             'apellido': self.apellido,
             'especialidad': self.especialidad,
@@ -66,6 +66,54 @@ class Profesional:
             raise Exception(e)
         
     @classmethod
+    def get_by_email(cls, correo):
+        try:
+            query = '''SELECT id_profesional, nombre, apellido, correo, contrasena
+                        FROM turnosDB.profesional WHERE correo = %s'''
+            result = DatabaseConnection.fetch_one(query, (correo,))
+            if result:
+                DatabaseConnection.close_connection()
+                return cls(
+                    id_profesional=result[0],
+                    nombre=result[1],
+                    apellido=result[2],
+                    correo=result[3],
+                    contrasena=result[4]
+                )
+            DatabaseConnection.close_connection()
+            return None
+        except Exception as e:
+            raise Exception(e)
+        
+    @classmethod
+    def turnos_reservados(cls, id_profesional):
+        try:
+            query = '''
+            SELECT p.nombre, p.apellido, t.fecha, TIME_FORMAT(t.Hora, "%H:%I:%S") AS Hora
+            FROM turnosDB.turno t
+            JOIN turnosDB.paciente p ON t.id_paciente = p.id_paciente
+            WHERE t.estado = 'Reservado' AND t.id_profesional = %s
+            '''
+            result = DatabaseConnection.fetch_all(query, (id_profesional,))
+            if result:
+                turnos_reservados = []
+                for turno in result:
+                    turno_data = {
+                        'nombre': turno[0],
+                        'apellido': turno[1],
+                        'fecha': turno[2],
+                        'hora': turno[3]
+                    }
+                    turnos_reservados.append(turno_data)
+                return turnos_reservados
+            DatabaseConnection.close_connection()
+            return []
+        except Exception as e:
+            raise Exception(e)
+
+
+
+    @classmethod
     def cancelar_turno(cls, id_turno, id_profesional, razon_cancelacion):
         """Cancela un turno actualizando su estado y registrando la cancelación."""
         try:
@@ -84,5 +132,30 @@ class Profesional:
             '''
             params = (id_turno, id_profesional, razon_cancelacion)
             DatabaseConnection.execute_query(registrar_cancelacion_query, params)
+        except Exception as e:
+            raise Exception(e)
+    
+    @staticmethod
+    def get_profesionales():
+        try:
+            query = '''
+            SELECT nombre, apellido, especialidad
+            FROM turnosDB.profesional
+            '''
+            result = DatabaseConnection.fetch_all(query)
+            if result:
+                profesionales = []
+                for profesional in result:
+                    profesional_instance = Profesional(
+                        nombre= profesional[0],
+                        apellido= profesional[1],
+                        especialidad= profesional[2]
+                    )
+                    profesionales.append(profesional_instance.serialize())
+                    
+                DatabaseConnection.close_connection()
+                return profesionales
+            DatabaseConnection.close_connection()
+            return []
         except Exception as e:
             raise Exception(e)
