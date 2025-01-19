@@ -13,12 +13,11 @@ class ProfesionalController:
         else:
             return usuario.serialize(), 200
 
-    @classmethod
-    def cancelarTurno(cls, id_profesional):
+    @staticmethod
+    @requiere_autenticacion
+    def cancelarTurno(id_turno, id_profesional):
         data = request.json
-        id_turno = data.get('ID_Turno') 
         razon_cancelacion = data.get('Razon', 'Cancelado por el profesional')
-
         try:
             # Verificar si el turno existe y pertenece al paciente
             turno = Paciente.obtener_turno_por_id(id_turno)

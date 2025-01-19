@@ -119,7 +119,7 @@ class Profesional:
         try:
             # Actualizar estado del turno
             update_turno_query = '''
-            UPDATE turnosDB.turnos
+            UPDATE turnosDB.turno
             SET estado = 'Cancelado por Profesional'
             WHERE id_turno = %s
             '''
@@ -127,7 +127,7 @@ class Profesional:
 
             # Registrar la cancelación
             registrar_cancelacion_query = '''
-            INSERT INTO turnosDB.cancelaciones (id_turno, id_realizado_por, fecha_cancelacion, razon)
+            INSERT INTO turnosDB.cancelacion (id_turno, id_realizado_por, fecha_cancelacion, razon)
             VALUES (%s, %s, NOW(), %s)
             '''
             params = (id_turno, id_profesional, razon_cancelacion)
