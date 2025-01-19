@@ -181,7 +181,7 @@ class Paciente:
             SELECT t.id_turno, t.fecha, TIME_FORMAT(t.Hora, "%H:%I:%S") AS Hora, t.estado, p.nombre, p.apellido
             FROM turnosDB.turno t
             JOIN turnosDB.profesional p ON t.id_profesional = p.id_profesional
-            WHERE t.id_paciente = %s
+            WHERE t.id_paciente = %s AND t.estado = "Reservado"
             '''
             result = DatabaseConnection.fetch_all(query, (id_paciente,))
             if result:

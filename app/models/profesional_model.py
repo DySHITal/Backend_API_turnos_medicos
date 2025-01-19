@@ -139,7 +139,7 @@ class Profesional:
     def get_profesionales():
         try:
             query = '''
-            SELECT nombre, apellido, especialidad
+            SELECT id_profesional, nombre, apellido, especialidad
             FROM turnosDB.profesional
             '''
             result = DatabaseConnection.fetch_all(query)
@@ -147,9 +147,10 @@ class Profesional:
                 profesionales = []
                 for profesional in result:
                     profesional_instance = Profesional(
-                        nombre= profesional[0],
-                        apellido= profesional[1],
-                        especialidad= profesional[2]
+                        id_profesional= profesional[0],
+                        nombre= profesional[1],
+                        apellido= profesional[2],
+                        especialidad= profesional[3]
                     )
                     profesionales.append(profesional_instance.serialize())
                     
