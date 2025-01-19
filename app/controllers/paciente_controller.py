@@ -69,7 +69,7 @@ class PacienteController:
         
     @staticmethod
     @requiere_autenticacion
-    def cancelarTurno(id_turno, id_usuario = None):
+    def cancelarTurno(id_turno, id_usuario):
         data = request.json
         razon_cancelacion = data.get('Razon', 'Cancelado por el paciente')
         try:
@@ -77,7 +77,7 @@ class PacienteController:
             turno = Paciente.obtener_turno_por_id(id_turno)
             if not turno:
                 return {'msg': 'El turno no existe'}, 404
-            if turno['id_paciente'] != data.get('id_paciente'):
+            if turno['id_paciente'] != id_usuario:
                 return {'msg': 'El turno no pertenece al paciente'}, 403
 
             # Cambiar el estado del turno a "Cancelado por Paciente"
