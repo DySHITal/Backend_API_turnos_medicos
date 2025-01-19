@@ -91,18 +91,27 @@ class Paciente:
             raise Exception(e)
         
     @classmethod
-    def get_info(cls, id_paciente):
+    def get_info(cls, id_usuario):
         try:
             query = 'SELECT nombre, apellido, correo, dni, obra_social FROM paciente WHERE id_paciente = %s'
-            result = DatabaseConnection.fetch_one(query, (id_paciente,))
+            result = DatabaseConnection.fetch_one(query, (id_usuario,))
+            
             if result is not None:
                 DatabaseConnection.close_connection()
-                info = result
-                return info
+                paciente = Paciente(
+                    nombre=result[0],
+                    apellido=result[1],
+                    correo=result[2],
+                    dni=result[3],
+                    obra_social=result[4]
+                )
+                return paciente.serialize()
+            
+            # Si no se encuentra el usuario
             DatabaseConnection.close_connection()
             return None
         except Exception as e:
-            raise Exception(e)
+            raise Exception(f"Error al obtener la información del paciente: {e}")
         
     @classmethod
     def turnos_reservados(cls, fecha, hora, id_profesional):
