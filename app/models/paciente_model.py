@@ -1,5 +1,6 @@
 from ..database import DatabaseConnection
 from flask_bcrypt import Bcrypt
+from datetime import datetime
 
 class Paciente:
     '''Modelo para la clase paciente'''
@@ -187,14 +188,27 @@ class Paciente:
     def get_turnos_paciente(cls, id_paciente):
         try:
             query = '''
-            SELECT t.id_turno, t.fecha, TIME_FORMAT(t.Hora, "%H:%I:%S") AS Hora, t.estado, p.nombre, p.apellido
+            SELECT t.id_turno, t.fecha, t.Hora, t.estado, p.nombre, p.apellido
             FROM turnosDB.turno t
             JOIN turnosDB.profesional p ON t.id_profesional = p.id_profesional
             WHERE t.id_paciente = %s AND t.estado = "Reservado"
             '''
             result = DatabaseConnection.fetch_all(query, (id_paciente,))
+            
             if result:
-                return result
+                formatted_result = []
+                for turno in result:
+                    turno_dict = {
+                        'id_turno': turno[0],
+                        'fecha': turno[1],
+                        'hora': turno[2].strftime('%H:%M:%S') if isinstance(turno[2], datetime) else str(turno[2]),
+                        'estado': turno[3],
+                        'nombre': turno[4],
+                        'apellido': turno[5]
+                    }
+                    formatted_result.append(turno_dict)
+                return formatted_result
+            
             return []
         except Exception as e:
             raise Exception(e)
