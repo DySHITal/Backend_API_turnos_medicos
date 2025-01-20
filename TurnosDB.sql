@@ -66,8 +66,8 @@ CREATE TABLE Profesional_ObraSocial (
 CREATE TABLE Cancelacion (
     ID_Cancelacion INT AUTO_INCREMENT PRIMARY KEY,
     ID_Turno INT NOT NULL,
-	ID_Paciente_cancelacion INT NOT NULL,
-    ID_Profesional_cancelacion INT NOT NULL,
+	ID_Paciente_cancelacion INT DEFAULT NULL,
+    ID_Profesional_cancelacion INT DEFAULT NULL,
     Fecha_Cancelacion DATETIME NOT NULL,
     Razon TEXT,
     FOREIGN KEY (ID_Turno) REFERENCES Turno(ID_Turno),

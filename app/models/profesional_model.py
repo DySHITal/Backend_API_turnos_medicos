@@ -131,7 +131,7 @@ class Profesional:
             DatabaseConnection.execute_query(update_turno_query, (id_turno,))
 
             registrar_cancelacion_query = '''
-            INSERT INTO turnosDB.cancelacion (id_turno, id_realizado_por, fecha_cancelacion, razon)
+            INSERT INTO turnosDB.cancelacion (id_turno, id_profesional_cancelacion, fecha_cancelacion, razon)
             VALUES (%s, %s, NOW(), %s)
             '''
             params = (id_turno, id_profesional, razon_cancelacion)

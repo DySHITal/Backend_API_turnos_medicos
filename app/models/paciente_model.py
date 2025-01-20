@@ -175,7 +175,7 @@ class Paciente:
 
             # Registrar la cancelación
             registrar_cancelacion_query = '''
-            INSERT INTO turnosDB.cancelacion (id_turno, id_realizado_por, fecha_cancelacion, razon)
+            INSERT INTO turnosDB.cancelacion (id_turno, id_paciente_cancelacion, fecha_cancelacion, razon)
             VALUES (%s, %s, NOW(), %s)
             '''
             params = (id_turno, id_paciente, razon_cancelacion)
