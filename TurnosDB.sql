@@ -66,11 +66,13 @@ CREATE TABLE Profesional_ObraSocial (
 CREATE TABLE Cancelacion (
     ID_Cancelacion INT AUTO_INCREMENT PRIMARY KEY,
     ID_Turno INT NOT NULL,
-    ID_realizado_por INT NOT NULL,
+	ID_Paciente_cancelacion INT NOT NULL,
+    ID_Profesional_cancelacion INT NOT NULL,
     Fecha_Cancelacion DATETIME NOT NULL,
     Razon TEXT,
     FOREIGN KEY (ID_Turno) REFERENCES Turno(ID_Turno),
-    FOREIGN KEY (id_realizado_por) REFERENCES paciente(id_paciente)
+    CONSTRAINT fk_cancelacion_paciente FOREIGN KEY (id_paciente_cancelacion) REFERENCES turnosDB.paciente(ID_Paciente),
+	CONSTRAINT fk_cancelacion_profesional FOREIGN KEY (id_profesional_cancelacion) REFERENCES turnosDB.profesional(ID_Profesional)
 );
 
 -- Tabla: Realizado_por
