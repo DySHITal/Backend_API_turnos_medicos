@@ -91,18 +91,27 @@ class Paciente:
             raise Exception(e)
         
     @classmethod
-    def get_info(cls, id_paciente):
+    def get_info(cls, id_usuario):
         try:
             query = 'SELECT nombre, apellido, correo, dni, obra_social FROM paciente WHERE id_paciente = %s'
-            result = DatabaseConnection.fetch_one(query, (id_paciente,))
+            result = DatabaseConnection.fetch_one(query, (id_usuario,))
+            
             if result is not None:
                 DatabaseConnection.close_connection()
-                info = result
-                return info
+                paciente = Paciente(
+                    nombre=result[0],
+                    apellido=result[1],
+                    correo=result[2],
+                    dni=result[3],
+                    obra_social=result[4]
+                )
+                return paciente.serialize()
+            
+            # Si no se encuentra el usuario
             DatabaseConnection.close_connection()
             return None
         except Exception as e:
-            raise Exception(e)
+            raise Exception(f"Error al obtener la información del paciente: {e}")
         
     @classmethod
     def turnos_reservados(cls, fecha, hora, id_profesional):
@@ -181,7 +190,7 @@ class Paciente:
             SELECT t.id_turno, t.fecha, TIME_FORMAT(t.Hora, "%H:%I:%S") AS Hora, t.estado, p.nombre, p.apellido
             FROM turnosDB.turno t
             JOIN turnosDB.profesional p ON t.id_profesional = p.id_profesional
-            WHERE t.id_paciente = %s
+            WHERE t.id_paciente = %s AND t.estado = "Reservado"
             '''
             result = DatabaseConnection.fetch_all(query, (id_paciente,))
             if result:

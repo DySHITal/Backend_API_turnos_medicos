@@ -10,13 +10,14 @@ JWT_SECRET_KEY = os.getenv("SECRET_KEY")
 
 class PacienteController:
     
-    @classmethod
-    def getInfo(cls, id_profesional):
-        usuario = Paciente.get_info(id_profesional)
+    @staticmethod
+    @requiere_autenticacion
+    def getInfo(id_usuario):
+        usuario = Paciente.get_info(id_usuario)
         if usuario is None:
             return {'msg': 'Usuario no encontrado'}, 404
         else:
-            return usuario.serialize(), 200
+            return usuario, 200
 
     @classmethod
     def register(cls):                  
@@ -86,6 +87,6 @@ class PacienteController:
         
     @staticmethod
     @requiere_autenticacion
-    def getTurnos(id_paciente, id_usuario = None):
-        turnos = Paciente.get_turnos_paciente(id_paciente)
+    def getTurnos(id_usuario):
+        turnos = Paciente.get_turnos_paciente(id_usuario)
         return jsonify(turnos), 200
