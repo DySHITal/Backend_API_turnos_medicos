@@ -59,7 +59,13 @@ class Profesional:
             result = DatabaseConnection.fetch_one(query, (id_profesional,))
             if result is not None:
                 DatabaseConnection.close_connection()
-                return result
+                profesional = Profesional(
+                    nombre=result[0],
+                    apellido=result[1],
+                    especialidad=result[2],
+                    numero_matricula=result[3]
+                )
+                return profesional.serialize()
             DatabaseConnection.close_connection()
             return None
         except Exception as e:
@@ -117,7 +123,6 @@ class Profesional:
     def cancelar_turno(cls, id_turno, id_profesional, razon_cancelacion):
         """Cancela un turno actualizando su estado y registrando la cancelación."""
         try:
-            # Actualizar estado del turno
             update_turno_query = '''
             UPDATE turnosDB.turno
             SET estado = 'Cancelado por Profesional'
@@ -125,7 +130,6 @@ class Profesional:
             '''
             DatabaseConnection.execute_query(update_turno_query, (id_turno,))
 
-            # Registrar la cancelación
             registrar_cancelacion_query = '''
             INSERT INTO turnosDB.cancelacion (id_turno, id_realizado_por, fecha_cancelacion, razon)
             VALUES (%s, %s, NOW(), %s)
@@ -134,6 +138,7 @@ class Profesional:
             DatabaseConnection.execute_query(registrar_cancelacion_query, params)
         except Exception as e:
             raise Exception(e)
+
     
     @staticmethod
     def get_profesionales():
@@ -158,5 +163,27 @@ class Profesional:
                 return profesionales
             DatabaseConnection.close_connection()
             return []
+        except Exception as e:
+            raise Exception(e)
+
+    @classmethod
+    def obtener_turno_por_id(cls, id_turno):
+        """Obtiene la información de un turno por su ID."""
+        try:
+            query = '''SELECT id_turno, id_paciente, id_profesional, fecha, hora, estado
+            FROM turnosDB.turno
+            WHERE id_turno = %s
+            '''
+            result = DatabaseConnection.fetch_one(query, (id_turno,))
+            if result:
+                return {
+                    'id_turno': result[0],
+                    'id_paciente': result[1],
+                    'id_profesional': result[2],
+                    'fecha': result[3],
+                    'hora': result[4],
+                    'estado': result[5]
+                }
+            return None
         except Exception as e:
             raise Exception(e)
