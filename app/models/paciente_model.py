@@ -189,3 +189,17 @@ class Paciente:
             return []
         except Exception as e:
             raise Exception(e)
+
+    @classmethod
+    def existe_dni(cls, dni):
+        try:
+            query = 'SELECT COUNT(*) FROM turnosDB.paciente WHERE dni = %s'
+            result = DatabaseConnection.fetch_one(query, (dni,))
+            if result is not None:
+                DatabaseConnection.close_connection()
+                cantidad = result[0]
+                return cantidad > 0
+            DatabaseConnection.close_connection()
+            return None
+        except Exception as e:
+            raise Exception(e)

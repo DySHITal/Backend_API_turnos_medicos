@@ -21,7 +21,6 @@ class PacienteController:
     @classmethod
     def register(cls):                  
         data = request.json
-        print(f"Datos recibidos para el registro: {data}")
         usuario = Paciente(
             nombre = data.get('nombre'),
             apellido = data.get('apellido'),
@@ -30,8 +29,12 @@ class PacienteController:
             obra_social = data.get('obra_social'),
             contrasena = data.get('contrasena')
         )
-        if Paciente.is_registered(usuario):
-            return {'msg':'Usuario ya registrado'}, 401
+        if not usuario.dni or not usuario.dni.isdigit() or len(usuario.dni) != 8:
+            return {'msg': 'El DNI debe tener 8 dígitos y contener solo números'}, 400
+        if not usuario.contrasena or len(usuario.contrasena) < 8:
+            return {'msg': 'La contraseña debe tener al menos 8 caracteres'}, 400
+        if Paciente.is_registered(usuario) or Paciente.existe_dni(usuario.dni):
+            return {'msg':'Usuario ya registrado o DNI en uso'}, 401
             
         try:
             Paciente.register_user(usuario)
@@ -39,8 +42,6 @@ class PacienteController:
         except Exception as e:
             return jsonify({'msg': 'Todos los campos deben estar completados'}), 400
         
-    # Cargar variables de entorno desde .env
-
     @staticmethod
     @requiere_autenticacion
     def crearTurno(id_usuario):
@@ -55,11 +56,9 @@ class PacienteController:
             }
             print("Turno: ", turno)
 
-            # Validar duplicidad de turno
             if Paciente.turnos_reservados(turno["fecha"], turno["hora"], turno["id_profesional"]):
                 return {'msg': 'El profesional ya tiene un turno reservado en esa hora'}, 409
 
-            # Crear el turno
             Paciente.crear_turno(turno)
             return jsonify({'msg': 'Turno creado exitosamente'}), 201
 
@@ -73,14 +72,12 @@ class PacienteController:
         data = request.json
         razon_cancelacion = data.get('Razon', 'Cancelado por el paciente')
         try:
-            # Verificar si el turno existe y pertenece al paciente
             turno = Paciente.obtener_turno_por_id(id_turno)
             if not turno:
                 return {'msg': 'El turno no existe'}, 404
             if turno['id_paciente'] != id_usuario:
                 return {'msg': 'El turno no pertenece al paciente'}, 403
 
-            # Cambiar el estado del turno a "Cancelado por Paciente"
             Paciente.cancelar_turno(id_turno, turno['id_paciente'], razon_cancelacion)
 
             return {'msg': 'Turno cancelado exitosamente'}, 200
