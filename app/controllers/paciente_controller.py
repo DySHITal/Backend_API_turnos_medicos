@@ -55,8 +55,6 @@ class PacienteController:
                 "id_paciente": id_usuario,
                 "id_profesional": data.get("ID_Profesional"),
             }
-            print("Turno: ", turno)
-
             if Paciente.turnos_reservados(turno["fecha"], turno["hora"], turno["id_profesional"]):
                 return {'msg': 'El profesional ya tiene un turno reservado en esa hora'}, 409
 
@@ -89,4 +87,4 @@ class PacienteController:
     @requiere_autenticacion
     def getTurnos(id_usuario):
         turnos = Paciente.get_turnos_paciente(id_usuario)
-        return jsonify(turnos), 200
+        return turnos, 200

@@ -32,7 +32,7 @@ CREATE TABLE Turno (
     Estado ENUM('Reservado', 'Cancelado por Paciente', 'Cancelado por Profesional') NOT NULL,
     ID_Paciente INT NOT NULL,
     ID_Profesional INT NOT NULL,
-	CONSTRAINT UC_FechaHoraProfesional UNIQUE (Fecha, Hora, ID_Profesional),
+	CONSTRAINT UC_FechaHoraProfesionalEstado UNIQUE (Fecha, Hora, ID_Profesional, Estado),
     FOREIGN KEY (ID_Paciente) REFERENCES Paciente(ID_Paciente),
     FOREIGN KEY (ID_Profesional) REFERENCES Profesional(ID_Profesional)
 );
