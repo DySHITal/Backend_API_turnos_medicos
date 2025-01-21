@@ -1,4 +1,5 @@
 from ..database import DatabaseConnection
+from datetime import datetime
 
 class Profesional:
     '''Modelo para la clase profesional'''
@@ -95,7 +96,7 @@ class Profesional:
     def turnos_reservados(cls, id_profesional):
         try:
             query = '''
-            SELECT p.nombre, p.apellido, t.fecha, TIME_FORMAT(t.Hora, "%H:%I:%S") AS Hora
+            SELECT p.nombre, p.apellido, t.fecha, t.Hora
             FROM turnosDB.turno t
             JOIN turnosDB.paciente p ON t.id_paciente = p.id_paciente
             WHERE t.estado = 'Reservado' AND t.id_profesional = %s
@@ -108,7 +109,7 @@ class Profesional:
                         'nombre': turno[0],
                         'apellido': turno[1],
                         'fecha': turno[2],
-                        'hora': turno[3]
+                        'hora': turno[3].strftime('%H:%M:%S') if isinstance(turno[3], datetime) else str(turno[3])
                     }
                     turnos_reservados.append(turno_data)
                 return turnos_reservados

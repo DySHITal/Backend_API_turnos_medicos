@@ -36,7 +36,7 @@ class ProfesionalController:
     @requiere_autenticacion
     def getTurnos(id_usuario):
         turnos = Profesional.turnos_reservados(id_usuario)
-        return jsonify(turnos), 200
+        return turnos, 200
     
     @classmethod
     def getProfesionales(cls):
