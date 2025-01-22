@@ -20,12 +20,10 @@ class ProfesionalController:
         data = request.json
         razon_cancelacion = data.get('Razon', 'Cancelado por el profesional')
         try:
-            # Verificar si el turno existe y pertenece al paciente
             turno = Profesional.obtener_turno_por_id(id_turno)
             if not turno:
                 return {'msg': 'El turno no existe'}, 404
 
-            # Cambiar el estado del turno a "Cancelado por Profesional"
             Profesional.cancelar_turno(id_turno, id_usuario, razon_cancelacion)
 
             return jsonify({'msg': 'Turno cancelado exitosamente'}), 200

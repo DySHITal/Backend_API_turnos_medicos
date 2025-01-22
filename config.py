@@ -16,3 +16,10 @@ class Config:
 
     TEMPLATE_FOLDER = "templates/"
     STATIC_FOLDER = "static/"
+
+    MAIL_SERVER = config.get('MAIL_SERVER', 'smtp.gmail.com')
+    MAIL_PORT = int(config.get('MAIL_PORT', 587))
+    MAIL_USE_TLS = config.get('MAIL_USE_TLS', 'True') == 'True'
+    MAIL_USERNAME = config['MAIL_USERNAME']
+    MAIL_PASSWORD = config['MAIL_PASSWORD']
+    MAIL_DEFAULT_SENDER = config['MAIL_DEFAULT_SENDER']
