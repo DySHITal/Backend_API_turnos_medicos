@@ -62,8 +62,7 @@ class ProfesionalController:
             return {'error': f"Error al obtener la disponibilidad: {str(e)}"}, 404
         
     @staticmethod
-    @requiere_autenticacion
-    def getOsProfesional(id_profesional, id_usuario = None):
+    def getOsProfesional(id_profesional):
         try:
             os_profesional = Profesional.get_os_profesional(id_profesional)
             return os_profesional, 200
