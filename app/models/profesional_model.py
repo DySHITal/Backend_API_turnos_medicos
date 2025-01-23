@@ -65,8 +65,9 @@ class Profesional:
                 profesional = Profesional(
                     nombre=result[0],
                     apellido=result[1],
-                    especialidad=result[2],
-                    numero_matricula=result[3]
+                    correo=result[2],
+                    especialidad=result[3],
+                    numero_matricula=result[4]
                 )
                 return profesional.serialize()
             DatabaseConnection.close_connection()
