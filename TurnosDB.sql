@@ -29,7 +29,7 @@ CREATE TABLE Turno (
     ID_Turno INT AUTO_INCREMENT PRIMARY KEY,
     Fecha DATE NOT NULL,
     Hora TIME NOT NULL,
-    Estado ENUM('Reservado', 'Cancelado por Paciente', 'Cancelado por Profesional') NOT NULL,
+    Estado ENUM('Reservado', 'Cancelado por Paciente', 'Cancelado por Profesional', 'Asistió', 'No Asistió') NOT NULL,
     ID_Paciente INT NOT NULL,
     ID_Profesional INT NOT NULL,
 	CONSTRAINT UC_FechaHoraProfesionalEstado UNIQUE (Fecha, Hora, ID_Profesional, Estado),
@@ -40,7 +40,7 @@ CREATE TABLE Turno (
 -- Tabla: Horario_Atención
 CREATE TABLE Disponibilidad (
     ID_Horario INT AUTO_INCREMENT PRIMARY KEY,
-    Dia_Semana ENUM('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo') NOT NULL,
+    Dias_Semana SET('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo') NOT NULL,
     Hora_Inicio TIME NOT NULL,
     Hora_Fin TIME NOT NULL,
     ID_Profesional INT NOT NULL,

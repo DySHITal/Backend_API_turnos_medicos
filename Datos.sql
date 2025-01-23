@@ -6,16 +6,13 @@ VALUES
 ('Laura', 'Martínez', 'laura.martinez@ejemplo.com', 'Psiquiatría', 'MAT45678', 'contrasena456'),
 ('Pedro', 'Sánchez', 'pedro.sanchez@ejemplo.com', 'Traumatología', 'MAT56789', 'contrasena567');
 
-INSERT INTO Disponibilidad (Dia_Semana, Hora_Inicio, Hora_Fin, ID_Profesional)
+INSERT INTO Disponibilidad (Dias_Semana, Hora_Inicio, Hora_Fin, ID_Profesional)
 VALUES
-('Lunes', '09:00:00', '13:00:00', 1),
-('Lunes', '14:00:00', '18:00:00', 1),
-('Martes', '10:00:00', '14:00:00', 2),
-('Miércoles', '08:00:00', '12:00:00', 3),
-('Miércoles', '13:00:00', '17:00:00', 3),
-('Jueves', '09:00:00', '13:00:00', 4),
-('Viernes', '15:00:00', '19:00:00', 5),
-('Sábado', '08:00:00', '12:00:00', 5);
+('Lunes,Martes,Miércoles,Jueves,Viernes', '09:00:00', '13:00:00', 1),
+('Martes,Jueves,Sábado', '10:00:00', '14:00:00', 2),
+('Lunes,Miércoles,Viernes', '13:00:00', '17:00:00', 3),
+('Lunes,Martes,Miércoles,Jueves,Viernes,Sábado', '09:00:00', '13:00:00', 4),
+('Martes,Viernes', '15:00:00', '19:00:00', 5);
 
 INSERT INTO Obra_Social (Nombre)
 VALUES

@@ -96,10 +96,10 @@ class Profesional:
     def turnos_reservados(cls, id_profesional):
         try:
             query = '''
-            SELECT p.nombre, p.apellido, t.fecha, t.Hora
+            SELECT p.nombre, p.apellido, t.estado, t.fecha, t.Hora
             FROM turnosDB.turno t
             JOIN turnosDB.paciente p ON t.id_paciente = p.id_paciente
-            WHERE t.estado = 'Reservado' AND t.id_profesional = %s
+            WHERE t.id_profesional = %s
             '''
             result = DatabaseConnection.fetch_all(query, (id_profesional,))
             if result:
@@ -108,8 +108,9 @@ class Profesional:
                     turno_data = {
                         'nombre': turno[0],
                         'apellido': turno[1],
-                        'fecha': turno[2],
-                        'hora': turno[3].strftime('%H:%M:%S') if isinstance(turno[3], datetime) else str(turno[3])
+                        'estado': turno[2],
+                        'fecha': turno[3],
+                        'hora': turno[4].strftime('%H:%M:%S') if isinstance(turno[4], datetime) else str(turno[4])
                     }
                     turnos_reservados.append(turno_data)
                 return turnos_reservados
@@ -188,3 +189,20 @@ class Profesional:
             return None
         except Exception as e:
             raise Exception(e)
+        
+    @classmethod
+    def actualizar_estado_turno(cls, id_turno, estado):
+        """
+        Actualiza el estado de un turno en la base de datos.
+        """
+        query = '''
+        UPDATE turnosDB.turno
+        SET estado = %s
+        WHERE id_turno = %s
+        '''
+        try:
+            cursor = DatabaseConnection.execute_query(query, (estado, id_turno))
+            if cursor.rowcount == 0:
+                raise Exception(f"El turno con ID {id_turno} no existe.")
+        except Exception as e:
+            raise Exception(f"Error al actualizar el estado del turno: {str(e)}")
