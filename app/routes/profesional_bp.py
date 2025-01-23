@@ -9,3 +9,5 @@ profesional_bp.route('/turnos_profesional', methods=['GET'])(ProfesionalControll
 profesional_bp.route('/get_profesionales', methods=['GET'])(ProfesionalController.getProfesionales)
 profesional_bp.route('/asistir/<int:id_turno>', methods=['POST'])(ProfesionalController.asistirTurno)
 profesional_bp.route('/disponibilidad/<int:id_profesional>', methods=['GET'])(ProfesionalController.getDisponibilidad)
+profesional_bp.route('/os_profesional/<int:id_profesional>', methods=['GET'])(ProfesionalController.getOsProfesional)
+profesional_bp.route('/modificar_profesional', methods=['PUT'])(ProfesionalController.modificarProfesional)

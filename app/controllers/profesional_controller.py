@@ -60,3 +60,35 @@ class ProfesionalController:
             return disponibilidad, 200
         except Exception as e:
             return {'error': f"Error al obtener la disponibilidad: {str(e)}"}, 404
+        
+    @staticmethod
+    @requiere_autenticacion
+    def getOsProfesional(id_profesional, id_usuario = None):
+        try:
+            os_profesional = Profesional.get_os_profesional(id_profesional)
+            return os_profesional, 200
+        except Exception as e:
+            return {'error': f"Error al obtener las obras sociales del profesional: {str(e)}"}, 404
+        
+    @staticmethod
+    @requiere_autenticacion
+    def modificarProfesional(id_usuario):
+        data = request.json
+        try:
+            profesional = Profesional(
+                nombre=data.get('nombre'),
+                apellido=data.get('apellido'),
+                correo=data.get('correo'),
+                especialidad=data.get('especialidad'),
+                numero_matricula=data.get('numero_matricula')
+            )
+            obras_sociales = data.get('obras_sociales')
+            id_obras_sociales = Profesional.get_id_os(obras_sociales)
+
+            if profesional is not None and obras_sociales is not None:
+                Profesional.modificar_profesional(id_usuario, profesional, id_obras_sociales)
+                return jsonify({'msg': 'Profesional modificado exitosamente'}), 200
+            else:
+                return jsonify({'msg': 'Datos incompletos'}), 400
+        except Exception as e:
+            return jsonify({'msg': 'Error al modificar el profesional', 'error': str(e)}), 400

@@ -8,8 +8,9 @@ class Profesional:
         self.id_profesional = kwargs.get('id_profesional')
         self.nombre = kwargs.get('nombre')
         self.apellido = kwargs.get('apellido')
+        self.correo = kwargs.get('correo')
         self.especialidad = kwargs.get('especialidad')
-        self.matricula = kwargs.get('numero_matricula')
+        self.numero_matricula = kwargs.get('numero_matricula')
         self.contrasena = kwargs.get('contrasena')
 
     def serialize(self):
@@ -20,8 +21,9 @@ class Profesional:
             'id_profesional': self.id_profesional,
             'nombre': self.nombre,
             'apellido': self.apellido,
+            'correo': self.correo,
             'especialidad': self.especialidad,
-            'numero_matricula': self.matricula,
+            'numero_matricula': self.numero_matricula,
             'contrasena': self.contrasena
         }
 
@@ -206,3 +208,71 @@ class Profesional:
                 raise Exception(f"El turno con ID {id_turno} no existe.")
         except Exception as e:
             raise Exception(f"Error al actualizar el estado del turno: {str(e)}")
+        
+    @classmethod
+    def get_os_profesional(cls, id_profesional):
+        try:
+            query = '''
+            SELECT os.Nombre AS Obra_Social
+            FROM Obra_Social os
+            JOIN Profesional_ObraSocial pos ON os.ID_ObraSocial = pos.ID_ObraSocial
+            JOIN Profesional p ON pos.ID_Profesional = p.ID_Profesional
+            WHERE p.ID_Profesional = %s;
+            '''
+            result = DatabaseConnection.fetch_all(query, (id_profesional,))
+            DatabaseConnection.close_connection()
+            return result if result else None
+        except Exception as e:
+            raise Exception(f"Error al obtener las obras sociales del profesional: {str(e)}")
+
+
+    @classmethod
+    def get_id_os(cls, obras_sociales):
+        try:
+            placeholders = ', '.join(['%s'] * len(obras_sociales))
+            query = f'''
+            SELECT ID_ObraSocial
+            FROM Obra_Social
+            WHERE Nombre IN ({placeholders});
+            '''
+            params = tuple(obras_sociales)
+            result = DatabaseConnection.fetch_all(query, params)
+            DatabaseConnection.close_connection()
+            return [row[0] for row in result] if result else None
+        except Exception as e:
+            raise Exception(f"Error al obtener los IDs de las obras sociales: {str(e)}")
+
+    @classmethod
+    def modificar_profesional(cls, id_usuario, profesional, obras_sociales):
+        try:
+            query_profesional = '''
+            UPDATE Profesional
+            SET nombre = %s, apellido = %s, correo = %s, especialidad = %s, numero_matricula = %s
+            WHERE id_profesional = %s;
+            '''
+            params_profesional = (
+                profesional.nombre,
+                profesional.apellido,
+                profesional.correo,
+                profesional.especialidad,
+                profesional.numero_matricula,
+                id_usuario
+            )
+            DatabaseConnection.execute_query(query_profesional, params_profesional)
+            DatabaseConnection.close_connection()
+            query_delete = '''
+            DELETE FROM Profesional_ObraSocial
+            WHERE id_profesional = %s;
+            '''
+            DatabaseConnection.execute_query(query_delete, (id_usuario,))
+            DatabaseConnection.close_connection()
+            query_insert = '''
+            INSERT INTO Profesional_ObraSocial (id_profesional, id_obrasocial)
+            VALUES (%s, %s);
+            '''
+            for id_obrasocial in obras_sociales:
+                DatabaseConnection.execute_query(query_insert, (id_usuario, id_obrasocial))
+            DatabaseConnection.close_connection()
+
+        except Exception as e:
+            raise Exception(f"Error al modificar el profesional: {str(e)}")
