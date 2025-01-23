@@ -58,7 +58,7 @@ class Profesional:
     @classmethod
     def get_info(cls, id_profesional):
         try:
-            query = 'SELECT nombre, apellido, especialidad, numero_matricula FROM profesional WHERE id_profesional = %s'
+            query = 'SELECT nombre, apellido, correo, especialidad, numero_matricula FROM profesional WHERE id_profesional = %s'
             result = DatabaseConnection.fetch_one(query, (id_profesional,))
             if result is not None:
                 DatabaseConnection.close_connection()
