@@ -8,3 +8,4 @@ paciente_bp.route('/crear_turno', methods=['POST'])(PacienteController.crearTurn
 paciente_bp.route('/cancelar_turno/<int:id_turno>', methods=['POST'])(PacienteController.cancelarTurno)
 paciente_bp.route('/datos_paciente', methods=['GET'])(PacienteController.getInfo)
 paciente_bp.route('/turnos_paciente', methods=['GET'])(PacienteController.getTurnos)
+paciente_bp.route('/modificar_paciente', methods=['PUT'])(PacienteController.modificarPaciente)

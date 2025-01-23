@@ -88,3 +88,22 @@ class PacienteController:
     def getTurnos(id_usuario):
         turnos = Paciente.get_turnos_paciente(id_usuario)
         return turnos, 200
+
+    @staticmethod
+    @requiere_autenticacion
+    def modificarPaciente(id_usuario):
+        data = request.json
+        try:
+            paciente = Paciente(
+                nombre = data.get('nombre'),
+                apellido = data.get('apellido'),
+                correo = data.get('correo'),
+                dni = data.get('dni'),
+                obra_social = data.get('obra_social')
+            )
+            if paciente is not None:
+                Paciente.modificar_paciente(id_usuario, paciente)
+                return jsonify({'msg': 'Paciente modificado exitosamente'}), 200
+        except Exception as e:
+            return jsonify({'msg': 'Error al modificar el paciente', 'error': str(e)}), 400
+            

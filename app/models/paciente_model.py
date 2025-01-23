@@ -225,3 +225,24 @@ class Paciente:
             return None
         except Exception as e:
             raise Exception(e)
+        
+    @classmethod
+    def modificar_paciente(cls, id_paciente, paciente):
+        try:
+            query = '''
+            UPDATE turnosDB.paciente
+            SET nombre = %s, apellido = %s, correo = %s, dni = %s, obra_social = %s
+            WHERE id_paciente = %s
+            '''
+            params = (
+                paciente.nombre,
+                paciente.apellido,
+                paciente.correo,
+                paciente.dni,
+                paciente.obra_social,
+                id_paciente
+            )
+            DatabaseConnection.execute_query(query, params=params)
+            DatabaseConnection.close_connection()
+        except Exception as e:
+            raise Exception(f"Error al modificar el paciente: {e}")

@@ -9,9 +9,11 @@ VALUES
 INSERT INTO Disponibilidad (Dias_Semana, Hora_Inicio, Hora_Fin, ID_Profesional)
 VALUES
 ('Lunes,Martes,Miércoles,Jueves,Viernes', '09:00:00', '13:00:00', 1),
+('Lunes,Martes,Miércoles,Jueves,Viernes', '14:00:00', '18:00:00', 1),
 ('Martes,Jueves,Sábado', '10:00:00', '14:00:00', 2),
+('Martes,Jueves,Sábado', '18:00:00', '22:00:00', 2),
 ('Lunes,Miércoles,Viernes', '13:00:00', '17:00:00', 3),
-('Lunes,Martes,Miércoles,Jueves,Viernes,Sábado', '09:00:00', '13:00:00', 4),
+('Lunes,Martes,Miércoles,Jueves,Viernes,Sábado', '09:00:00', '16:00:00', 4),
 ('Martes,Viernes', '15:00:00', '19:00:00', 5);
 
 INSERT INTO Obra_Social (Nombre)
