@@ -116,15 +116,18 @@ class Paciente:
     @classmethod
     def turnos_reservados(cls, fecha, hora, id_profesional):
         try:
-            query = '''SELECT estado FROM turnosDB.turno WHERE fecha = %s AND hora = %s AND id_profesional = %s'''
-            params = (fecha, hora, id_profesional)
+            query = '''
+                SELECT estado 
+                FROM turnosDB.turno 
+                WHERE fecha = %s 
+                AND id_profesional = %s 
+                AND estado = 'Reservado'
+                AND ABS(TIMESTAMPDIFF(MINUTE, CONCAT(fecha, ' ', hora), CONCAT(%s, ' ', %s))) < 30
+            '''
+            params = (fecha, id_profesional, fecha, hora)
             result = DatabaseConnection.fetch_one(query, params=params)
-            if result is not None:
-                if result != "Reservado":
-                    DatabaseConnection.close_connection()
-                    return False
-                DatabaseConnection.close_connection()
-            return None
+            DatabaseConnection.close_connection()            
+            return result is not None
         except Exception as e:
             raise Exception(e)
         
