@@ -1,7 +1,6 @@
 from ..models.profesional_model import Profesional
 from ..models.disponibilidad_model import Disponibilidad
 from flask import request, session, jsonify
-import os
 from ..utils.auth_decorador import requiere_autenticacion
 class ProfesionalController:
     

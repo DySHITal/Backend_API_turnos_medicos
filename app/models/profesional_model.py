@@ -29,6 +29,7 @@ class Profesional:
 
     @classmethod
     def is_registered(cls, profesional):
+        '''Controla si el profesional está registrado'''
         try:
             query = '''SELECT id_profesional FROM turnosDB.profesional WHERE email = %(email)s AND contrasena = %(contrasena)s'''
             params = profesional.__dict__
@@ -43,8 +44,9 @@ class Profesional:
 
     @classmethod
     def get_id_profesional(cls, email):
+        '''Obtiene el id profesional a través del email'''
         try:
-            query = 'SELECT id_profesional FROM profesional WHERE email = %s'
+            query = 'SELECT id_profesional FROM profesional WHERE correo = %s'
             result = DatabaseConnection.fetch_one(query, (email,))
             if result is not None:
                 DatabaseConnection.close_connection()
@@ -57,6 +59,7 @@ class Profesional:
         
     @classmethod
     def get_info(cls, id_profesional):
+        '''Obtiene la información del profesional a través del id_profesional'''
         try:
             query = 'SELECT nombre, apellido, correo, especialidad, numero_matricula FROM profesional WHERE id_profesional = %s'
             result = DatabaseConnection.fetch_one(query, (id_profesional,))
@@ -77,6 +80,7 @@ class Profesional:
         
     @classmethod
     def get_by_email(cls, correo):
+        '''Obtiene la información del profesional a través del email'''
         try:
             query = '''SELECT id_profesional, nombre, apellido, correo, contrasena
                         FROM turnosDB.profesional WHERE correo = %s'''
@@ -97,6 +101,7 @@ class Profesional:
         
     @classmethod
     def turnos_reservados(cls, id_profesional):
+        '''Obtiene los turnos reservados del profesional a través del id_profesional'''
         try:
             query = '''
             SELECT p.nombre, p.apellido, t.estado, t.fecha, t.Hora
@@ -122,8 +127,6 @@ class Profesional:
         except Exception as e:
             raise Exception(e)
 
-
-
     @classmethod
     def cancelar_turno(cls, id_turno, id_profesional, razon_cancelacion):
         """Cancela un turno actualizando su estado y registrando la cancelación."""
@@ -147,6 +150,7 @@ class Profesional:
     
     @staticmethod
     def get_profesionales():
+        """Obtiene la lista de todos los profesionales."""
         try:
             query = '''
             SELECT id_profesional, nombre, apellido, correo, especialidad, numero_matricula
@@ -197,9 +201,7 @@ class Profesional:
         
     @classmethod
     def actualizar_estado_turno(cls, id_turno, estado):
-        """
-        Actualiza el estado de un turno en la base de datos.
-        """
+        """Actualiza el estado de un turno en la base de datos."""
         query = '''
         UPDATE turnosDB.turno
         SET estado = %s
@@ -214,6 +216,7 @@ class Profesional:
         
     @classmethod
     def get_os_profesional(cls, id_profesional):
+        """Obtiene la obra social del profesional."""
         try:
             query = '''
             SELECT os.Nombre AS Obra_Social
@@ -231,6 +234,7 @@ class Profesional:
 
     @classmethod
     def get_id_os(cls, obras_sociales):
+        """Obtiene los IDs de las obras sociales a partir de los nombres."""
         try:
             placeholders = ', '.join(['%s'] * len(obras_sociales))
             query = f'''
@@ -247,6 +251,7 @@ class Profesional:
 
     @classmethod
     def modificar_profesional(cls, id_usuario, profesional, obras_sociales):
+        """Actualiza los datos del profesional en la base de datos."""
         try:
             query_profesional = '''
             UPDATE Profesional
