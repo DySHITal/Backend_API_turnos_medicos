@@ -59,12 +59,6 @@ class PacienteController:
             if Paciente.turnos_reservados(turno["fecha"], turno["hora"], turno["id_profesional"]):
                 return {'msg': 'El profesional ya tiene un turno reservado en esa hora'}, 409
             
-            fecha_hora_turno = datetime.strptime(f"{turno['fecha']} {turno['hora']}", "%Y-%m-%d %H:%M:%S")
-            ahora = datetime.now()
-
-            if fecha_hora_turno <= ahora + timedelta(hours=24):
-                return {'msg': 'No puedes reservar turnos antes de 24 horas de anticipación'}, 400
-
             Paciente.crear_turno(turno)
             return jsonify({'msg': 'Turno creado exitosamente'}), 201
 
@@ -75,6 +69,8 @@ class PacienteController:
     @requiere_autenticacion
     def cancelarTurno(id_turno, id_usuario):
         data = request.json
+        turno_fecha = data.get('fecha')
+        turno_hora = data.get('hora')
         razon_cancelacion = data.get('Razon', 'Cancelado por el paciente')
         try:
             turno = Paciente.obtener_turno_por_id(id_turno)
@@ -82,6 +78,12 @@ class PacienteController:
                 return {'msg': 'El turno no existe'}, 404
             if turno['id_paciente'] != id_usuario:
                 return {'msg': 'El turno no pertenece al paciente'}, 403
+            
+            fecha_hora_turno = datetime.strptime(f"{turno_fecha} {turno_hora}", "%Y-%m-%d %H:%M")
+            ahora = datetime.now()
+
+            if fecha_hora_turno <= ahora + timedelta(hours=24):
+                return {'msg': 'No puedes cancelar turnos antes de 24 horas de anticipación'}, 400
 
             Paciente.cancelar_turno(id_turno, turno['id_paciente'], razon_cancelacion)
 
