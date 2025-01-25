@@ -61,16 +61,17 @@ class Profesional:
     def get_info(cls, id_profesional):
         '''Obtiene la información del profesional a través del id_profesional'''
         try:
-            query = 'SELECT nombre, apellido, correo, especialidad, numero_matricula FROM profesional WHERE id_profesional = %s'
+            query = 'SELECT id_profesional, nombre, apellido, correo, especialidad, numero_matricula FROM profesional WHERE id_profesional = %s'
             result = DatabaseConnection.fetch_one(query, (id_profesional,))
             if result is not None:
                 DatabaseConnection.close_connection()
                 profesional = Profesional(
-                    nombre=result[0],
-                    apellido=result[1],
-                    correo=result[2],
-                    especialidad=result[3],
-                    numero_matricula=result[4]
+                    id_profesional=result[0],
+                    nombre=result[1],
+                    apellido=result[2],
+                    correo=result[3],
+                    especialidad=result[4],
+                    numero_matricula=result[5]
                 )
                 return profesional.serialize()
             DatabaseConnection.close_connection()
