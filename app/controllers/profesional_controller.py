@@ -2,6 +2,8 @@ from ..models.profesional_model import Profesional
 from ..models.disponibilidad_model import Disponibilidad
 from flask import request, session, jsonify
 from ..utils.auth_decorador import requiere_autenticacion
+from datetime import datetime, timedelta
+
 class ProfesionalController:
     
     @staticmethod
@@ -17,12 +19,20 @@ class ProfesionalController:
     @requiere_autenticacion
     def cancelarTurno(id_turno, id_usuario):
         data = request.json
+        turno_fecha = data.get('fecha')
+        turno_hora = data.get('hora')
         razon_cancelacion = data.get('Razon', 'Cancelado por el profesional')
         try:
             turno = Profesional.obtener_turno_por_id(id_turno)
             if not turno:
                 return {'msg': 'El turno no existe'}, 404
 
+            fecha_hora_turno = datetime.strptime(f"{turno_fecha} {turno_hora}", "%Y-%m-%d %H:%M")
+            ahora = datetime.now()
+
+            if fecha_hora_turno <= ahora + timedelta(hours=24):
+                return {'msg': 'No puedes cancelar turnos antes de 24 horas de anticipación'}, 400
+            
             Profesional.cancelar_turno(id_turno, id_usuario, razon_cancelacion)
 
             return jsonify({'msg': 'Turno cancelado exitosamente'}), 200

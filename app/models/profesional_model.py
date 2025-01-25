@@ -105,7 +105,7 @@ class Profesional:
         '''Obtiene los turnos reservados del profesional a través del id_profesional'''
         try:
             query = '''
-            SELECT p.nombre, p.apellido, t.estado, t.fecha, t.Hora
+            SELECT p.nombre, p.apellido, t.estado, t.fecha, t.Hora, t.id_turno
             FROM turnosDB.turno t
             JOIN turnosDB.paciente p ON t.id_paciente = p.id_paciente
             WHERE t.id_profesional = %s
@@ -119,7 +119,8 @@ class Profesional:
                         'apellido': turno[1],
                         'estado': turno[2],
                         'fecha': turno[3],
-                        'hora': turno[4].strftime('%H:%M:%S') if isinstance(turno[4], datetime) else str(turno[4])
+                        'hora': turno[4].strftime('%H:%M:%S') if isinstance(turno[4], datetime) else str(turno[4]),
+                        'id_turno': turno[5]
                     }
                     turnos_reservados.append(turno_data)
                 return turnos_reservados
