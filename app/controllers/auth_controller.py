@@ -29,7 +29,8 @@ class AuthController:
             # Para profesionales, no manejamos contraseñas con hashing, sino que directamente la validación de correos
             if profesional.contrasena == contrasena:
                 access_token = create_access_token(identity=str(profesional.id_profesional)) 
-                return jsonify({'msg': 'Sesion iniciada', 'access_token': access_token}), 200
+                matricula = True
+                return jsonify({'msg': 'Sesion iniciada', 'access_token': access_token}, matricula), 200
             else:
                 return {'msg': 'Usuario o contraseña incorrectos'}, 401
 
