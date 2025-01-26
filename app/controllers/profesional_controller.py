@@ -100,3 +100,19 @@ class ProfesionalController:
                 return jsonify({'msg': 'Datos incompletos'}), 400
         except Exception as e:
             return jsonify({'msg': 'Error al modificar el profesional', 'error': str(e)}), 400
+        
+    @staticmethod
+    @requiere_autenticacion
+    def modificarDisponibilidad(id_usuario):
+        data = request.json
+        try:
+            disponibilidades = data.get('disponibilidades')
+            if not disponibilidades or not isinstance(disponibilidades, list):
+                return jsonify({'msg': 'Datos incompletos o formato inválido'}), 400
+
+            # Llamar al modelo para actualizar las disponibilidades
+            Disponibilidad.modificar_disponibilidad(id_usuario, disponibilidades)
+            return jsonify({'msg': 'Disponibilidad modificada exitosamente'}), 200
+
+        except Exception as e:
+            return jsonify({'msg': 'Error al modificar la disponibilidad', 'error': str(e)}), 400

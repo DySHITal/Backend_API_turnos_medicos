@@ -64,3 +64,44 @@ class Disponibilidad:
             return []
         except Exception as e:
             raise Exception(f"Error al obtener la disponibilidad del profesional: {str(e)}")
+        
+    @classmethod
+    def eliminar_disponibilidades(cls, id_profesional):
+        '''Elimina todas las disponibilidades de un profesional'''
+        try:
+            query = 'DELETE FROM turnosDB.disponibilidad WHERE ID_Profesional = %s'
+            DatabaseConnection.execute_query(query, (id_profesional,))
+        except Exception as e:
+            raise Exception(f"Error al eliminar las disponibilidades: {str(e)}")
+
+
+    @classmethod
+    def insertar_disponibilidades(cls, id_profesional, disponibilidades):
+        '''Inserta nuevas disponibilidades para un profesional'''
+        try:
+            query = '''
+            INSERT INTO turnosDB.disponibilidad (Dias_Semana, Hora_Inicio, Hora_Fin, ID_Profesional)
+            VALUES (%s, %s, %s, %s)
+            '''
+            for disponibilidad in disponibilidades:
+                DatabaseConnection.execute_query(
+                    query,
+                    (
+                        disponibilidad['dias_semana'],
+                        disponibilidad['hora_inicio'],
+                        disponibilidad['hora_fin'],
+                        id_profesional
+                    )
+                )
+        except Exception as e:
+            raise Exception(f"Error al insertar las disponibilidades: {str(e)}")
+
+
+    @classmethod
+    def modificar_disponibilidad(cls, id_profesional, disponibilidades):
+        '''Modifica las disponibilidades de un profesional'''
+        try:
+            cls.eliminar_disponibilidades(id_profesional)
+            cls.insertar_disponibilidades(id_profesional, disponibilidades)
+        except Exception as e:
+            raise Exception(f"Error al modificar las disponibilidades: {str(e)}")
