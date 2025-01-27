@@ -6,7 +6,7 @@ from app.controllers.profesional_controller import ProfesionalController
 app = Flask(__name__)
 
 # Ruta temporal para pruebas
-@app.route('/modificarDisponibilidad/<int:id_usuario>', methods=['POST'])
+@app.route('/modificar_disponibilidad/<int:id_usuario>', methods=['PUT'])
 def modificar_disponibilidad(id_usuario):
     return ProfesionalController.modificarDisponibilidad(id_usuario)
 
@@ -38,10 +38,9 @@ def test_modificar_disponibilidad_valida(client):
         ]
     }
 
-    response = client.post(
-        "/modificarDisponibilidad/1",
+    response = client.put(
+        "/modificar_disponibilidad/1",
         json=payload,
-        headers={"Authorization": "Bearer token_valido"}
     )
 
     assert response.status_code == 200
@@ -62,10 +61,9 @@ def test_modificar_disponibilidad_invalida(client):
         ]
     }
 
-    response = client.post(
-        "/modificarDisponibilidad/1",
+    response = client.put(
+        "/modificar_disponibilidad/1",
         json=payload,
-        headers={"Authorization": "Bearer token_valido"}
     )
 
     assert response.status_code == 400
