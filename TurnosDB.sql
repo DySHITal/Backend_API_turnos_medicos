@@ -29,10 +29,10 @@ CREATE TABLE Turno (
     ID_Turno INT AUTO_INCREMENT PRIMARY KEY,
     Fecha DATE NOT NULL,
     Hora TIME NOT NULL,
-    Estado ENUM('Reservado', 'Cancelado por Paciente', 'Cancelado por Profesional') NOT NULL,
+    Estado ENUM('Reservado', 'Cancelado por Paciente', 'Cancelado por Profesional', 'Asistió', 'No Asistió') NOT NULL,
     ID_Paciente INT NOT NULL,
     ID_Profesional INT NOT NULL,
-	CONSTRAINT UC_FechaHoraProfesional UNIQUE (Fecha, Hora, ID_Profesional),
+	CONSTRAINT UC_FechaHoraProfesionalEstado UNIQUE (Fecha, Hora, ID_Profesional, Estado),
     FOREIGN KEY (ID_Paciente) REFERENCES Paciente(ID_Paciente),
     FOREIGN KEY (ID_Profesional) REFERENCES Profesional(ID_Profesional)
 );
@@ -40,7 +40,7 @@ CREATE TABLE Turno (
 -- Tabla: Horario_Atención
 CREATE TABLE Disponibilidad (
     ID_Horario INT AUTO_INCREMENT PRIMARY KEY,
-    Dia_Semana ENUM('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo') NOT NULL,
+    Dias_Semana SET('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo') NOT NULL,
     Hora_Inicio TIME NOT NULL,
     Hora_Fin TIME NOT NULL,
     ID_Profesional INT NOT NULL,
@@ -66,11 +66,13 @@ CREATE TABLE Profesional_ObraSocial (
 CREATE TABLE Cancelacion (
     ID_Cancelacion INT AUTO_INCREMENT PRIMARY KEY,
     ID_Turno INT NOT NULL,
-    ID_realizado_por INT NOT NULL,
+	ID_Paciente_cancelacion INT DEFAULT NULL,
+    ID_Profesional_cancelacion INT DEFAULT NULL,
     Fecha_Cancelacion DATETIME NOT NULL,
     Razon TEXT,
     FOREIGN KEY (ID_Turno) REFERENCES Turno(ID_Turno),
-    FOREIGN KEY (id_realizado_por) REFERENCES paciente(id_paciente)
+    CONSTRAINT fk_cancelacion_paciente FOREIGN KEY (id_paciente_cancelacion) REFERENCES turnosDB.paciente(ID_Paciente),
+	CONSTRAINT fk_cancelacion_profesional FOREIGN KEY (id_profesional_cancelacion) REFERENCES turnosDB.profesional(ID_Profesional)
 );
 
 -- Tabla: Realizado_por
