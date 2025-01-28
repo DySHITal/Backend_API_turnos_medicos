@@ -16,3 +16,20 @@ class Config:
 
     TEMPLATE_FOLDER = "templates/"
     STATIC_FOLDER = "static/"
+
+class TestingConfig:
+    config = dotenv_values('.env')
+
+    SECRET_KEY = config['SECRET_KEY']
+    JWT_TOKEN_LOCATION = ['headers']
+    SERVER_NAME = "127.0.0.1:5000"
+    TESTING = True
+
+    DATABASE_USERNAME = config['TEST_DATABASE_USERNAME']
+    DATABASE_PASSWORD = config['TEST_DATABASE_PASSWORD']
+    DATABASE_HOST = config['TEST_DATABASE_HOST']
+    DATABASE_PORT = config['TEST_DATABASE_PORT']
+    DATABASE_NAME = config['TEST_DATABASE_NAME']
+
+    TEMPLATE_FOLDER = "templates/"
+    STATIC_FOLDER = "static/"

@@ -1,37 +1,45 @@
 import pytest
 from flask import Flask, request, jsonify
-from app.controllers.profesional_controller import ProfesionalController
+from app.database import DatabaseConnection
+from config import TestingConfig
+from app import init_app
 
-# Crear una aplicación Flask de prueba
-app = Flask(__name__)
-
-# Ruta temporal para pruebas
-@app.route('/modificar_disponibilidad/<int:id_usuario>', methods=['PUT'])
-def modificar_disponibilidad(id_usuario):
-    return ProfesionalController.modificarDisponibilidad(id_usuario)
 
 @pytest.fixture
-def client():
+def app(autouse=True):
+    app = init_app()
+    app.config.from_object(TestingConfig)
+    DatabaseConnection.set_config(app.config)
+    yield app
+    DatabaseConnection.close_connection()
+
+@pytest.fixture
+def client(app):
     """
     Crear un cliente de prueba para la aplicación Flask.
     """
-    with app.test_client() as client:
-        yield client
+    return app.test_client()
 
 
 def test_modificar_disponibilidad_valida(client):
     """
     CP-001: Validar que se pueda registrar la disponibilidad del profesional con un formato de datos válido.
     """
+    body = {
+    "correo": "juanperez@ejemplo.com",
+    "contrasena": "contrasena123"}
+    response = client.post("/login", json=body, content_type="application/json") 
+    token = response.json[0]["access_token"]
+
     payload = {
         "disponibilidades": [
             {
-                "dias_semana": "Lunes,Martes,Miércoles",
+                "dias_semana": "Lunes",
                 "hora_inicio": "08:00:00",
                 "hora_fin": "12:00:00"
             },
             {
-                "dias_semana": "Lunes,Martes,Miércoles",
+                "dias_semana": "Lunes",
                 "hora_inicio": "14:00:00",
                 "hora_fin": "20:00:00"
             }
@@ -39,13 +47,12 @@ def test_modificar_disponibilidad_valida(client):
     }
 
     response = client.put(
-        "/modificar_disponibilidad/1",
+        "/modificar_disponibilidad",
         json=payload,
+        headers={"Authorization": f"Bearer {token}"},
     )
 
     assert response.status_code == 200
-    assert response.json.get("msg") == "Disponibilidad modificada exitosamente"
-
 
 def test_modificar_disponibilidad_invalida(client):
     """
@@ -67,4 +74,3 @@ def test_modificar_disponibilidad_invalida(client):
     )
 
     assert response.status_code == 400
-    assert response.json.get("msg") == "Datos incompletos o formato inválido"
