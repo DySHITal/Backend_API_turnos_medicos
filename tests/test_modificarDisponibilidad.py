@@ -66,6 +66,12 @@ def test_modificar_disponibilidad_invalida(client):
     """
     CP-002: Validar que el sistema detecte un cuerpo de solicitud inválido al intentar registrar la disponibilidad.
     """
+    body = {
+    "correo": "juan.perez@ejemplo.com",
+    "contrasena": "contrasena123"}
+    response = client.post("/login", json=body, content_type="application/json") 
+    token = response.json[0]["access_token"]
+
     payload = {
         "disponibilidades": [
             {
@@ -77,8 +83,9 @@ def test_modificar_disponibilidad_invalida(client):
     }
 
     response = client.put(
-        "/modificar_disponibilidad/1",
+        "/modificar_disponibilidad",
         json=payload,
+        headers={"Authorization": f"Bearer {token}"},
     )
 
     assert response.status_code == 400

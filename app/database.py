@@ -6,13 +6,13 @@ class DatabaseConnection:
     _cursor = None
     @classmethod
     def get_connection(cls):
-        if cls._connection is None:
+        if cls._connection is None or not cls._connection.is_connected():
             cls._connection = mysql.connector.connect(
-            host=cls._config['DATABASE_HOST'],
-            user=cls._config['DATABASE_USERNAME'],
-            port =cls._config['DATABASE_PORT'],
-            password=cls._config['DATABASE_PASSWORD'],
-            database=cls._config['DATABASE_NAME']
+                host=cls._config['DATABASE_HOST'],
+                user=cls._config['DATABASE_USERNAME'],
+                port=cls._config['DATABASE_PORT'],
+                password=cls._config['DATABASE_PASSWORD'],
+                database=cls._config['DATABASE_NAME']
             )
         return cls._connection
 
@@ -22,10 +22,15 @@ class DatabaseConnection:
     
     @classmethod
     def execute_query(cls, query, params=None):
-        cursor = cls.get_connection().cursor()
-        cursor.execute(query, params)
-        cls._connection.commit()
+        conn = cls.get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute(query, params)
+            conn.commit()
+        finally:
+            cursor.close()
         return cursor
+
     @classmethod
     def fetch_one(cls, query, params=None):
         cursor = cls.get_connection().cursor()

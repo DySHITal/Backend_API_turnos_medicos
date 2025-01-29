@@ -1,6 +1,6 @@
 
 def cargar_datos(test_db):
-    with open("datos_test.sql") as f:
+    with open("datos_test.sql", encoding="utf-8") as f:
         sql_script = f.read()
     with test_db.get_connection() as conn:
         cursor = conn.cursor()
@@ -12,6 +12,8 @@ def cargar_datos(test_db):
 
 def eliminar_datos(test_db):
     with test_db.get_connection() as conn:
+        if not conn.is_connected():
+            conn.ping(reconnect=True)
         cursor = conn.cursor()
         cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")
         cursor.execute("TRUNCATE TABLE paciente;")

@@ -2,4 +2,5 @@ INSERT INTO `profesional` VALUES (1,'Juan','Pérez','juan.perez@ejemplo.com','Ca
 INSERT INTO `disponibilidad` VALUES (1,'Lunes,Martes,Miércoles,Jueves,Viernes','09:00:00','13:00:00',1),(2,'Lunes,Martes,Miércoles,Jueves,Viernes','14:00:00','18:00:00',1),(3,'Martes,Jueves,Sábado','10:00:00','14:00:00',2),(4,'Martes,Jueves,Sábado','18:00:00','22:00:00',2),(5,'Lunes,Miércoles,Viernes','13:00:00','17:00:00',3),(6,'Lunes,Martes,Miércoles,Jueves,Viernes,Sábado','09:00:00','16:00:00',4),(7,'Martes,Viernes','15:00:00','19:00:00',5);
 INSERT INTO `obra_social` VALUES (5,'Boreal'),(2,'IPS'),(4,'Ospe'),(1,'Sancor Salud'),(3,'Swiss Medical');
 INSERT INTO `profesional_obrasocial` VALUES (1,1,1),(2,1,2),(3,2,3),(4,2,4),(5,3,1),(6,4,5),(7,5,2);
-INSERT INTO `paciente` VALUES (1,'John','Doe','jd@example.com',12345678,'IPS',"$2b$12$FrArCJ0Kwu3Ma6mJ5E2adu56slLO4aOcGB9v6.Lpcm5nb0/hl0Zsy");
+INSERT INTO `paciente` VALUES (1,'John','Doe','jd@example.com',12345678,'IPS',"$2b$12$SPy4cZoTNKw70rC4BqiO3u2/KS2SCRq6kBDhewVK54JVFjbdD8fou");
+INSERT INTO `turno` VALUES (1,"2025-07-25","10:00:00","Reservado",1,1)
