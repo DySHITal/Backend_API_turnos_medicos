@@ -31,7 +31,7 @@ class Profesional:
     def is_registered(cls, profesional):
         '''Controla si el profesional está registrado'''
         try:
-            query = '''SELECT id_profesional FROM turnosDB.profesional WHERE email = %(email)s AND contrasena = %(contrasena)s'''
+            query = '''SELECT id_profesional FROM profesional WHERE email = %(email)s AND contrasena = %(contrasena)s'''
             params = profesional.__dict__
             result = DatabaseConnection.fetch_one(query, params=params)
             if result is not None:
@@ -84,7 +84,7 @@ class Profesional:
         '''Obtiene la información del profesional a través del email'''
         try:
             query = '''SELECT id_profesional, nombre, apellido, correo, contrasena
-                        FROM turnosDB.profesional WHERE correo = %s'''
+                        FROM profesional WHERE correo = %s'''
             result = DatabaseConnection.fetch_one(query, (correo,))
             if result:
                 DatabaseConnection.close_connection()
@@ -106,8 +106,8 @@ class Profesional:
         try:
             query = '''
             SELECT p.nombre, p.apellido, t.estado, t.fecha, t.Hora, t.id_turno
-            FROM turnosDB.turno t
-            JOIN turnosDB.paciente p ON t.id_paciente = p.id_paciente
+            FROM turno t
+            JOIN paciente p ON t.id_paciente = p.id_paciente
             WHERE t.id_profesional = %s
             '''
             result = DatabaseConnection.fetch_all(query, (id_profesional,))
@@ -134,14 +134,14 @@ class Profesional:
         """Cancela un turno actualizando su estado y registrando la cancelación."""
         try:
             update_turno_query = '''
-            UPDATE turnosDB.turno
+            UPDATE turno
             SET estado = 'Cancelado por Profesional'
             WHERE id_turno = %s
             '''
             DatabaseConnection.execute_query(update_turno_query, (id_turno,))
 
             registrar_cancelacion_query = '''
-            INSERT INTO turnosDB.cancelacion (id_turno, id_profesional_cancelacion, fecha_cancelacion, razon)
+            INSERT INTO cancelacion (id_turno, id_profesional_cancelacion, fecha_cancelacion, razon)
             VALUES (%s, %s, NOW(), %s)
             '''
             params = (id_turno, id_profesional, razon_cancelacion)
@@ -156,7 +156,7 @@ class Profesional:
         try:
             query = '''
             SELECT id_profesional, nombre, apellido, correo, especialidad, numero_matricula
-            FROM turnosDB.profesional
+            FROM profesional
             '''
             result = DatabaseConnection.fetch_all(query)
             if result:
@@ -184,7 +184,7 @@ class Profesional:
         """Obtiene la información de un turno por su ID."""
         try:
             query = '''SELECT id_turno, id_paciente, id_profesional, fecha, hora, estado
-            FROM turnosDB.turno
+            FROM turno
             WHERE id_turno = %s
             '''
             result = DatabaseConnection.fetch_one(query, (id_turno,))
@@ -205,7 +205,7 @@ class Profesional:
     def actualizar_estado_turno(cls, id_turno, estado):
         """Actualiza el estado de un turno en la base de datos."""
         query = '''
-        UPDATE turnosDB.turno
+        UPDATE turno
         SET estado = %s
         WHERE id_turno = %s
         '''

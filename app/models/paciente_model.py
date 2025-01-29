@@ -32,7 +32,7 @@ class Paciente:
     def is_registered(cls, paciente):
         '''Controla si el paciente está registrado'''
         try:
-            query = '''SELECT id_paciente FROM turnosDB.paciente WHERE correo = %(correo)s'''
+            query = '''SELECT id_paciente FROM paciente WHERE correo = %(correo)s'''
             params = paciente.__dict__
             result = DatabaseConnection.fetch_one(query, params=params)
             if result is not None:
@@ -48,7 +48,7 @@ class Paciente:
         '''Obtiene un paciente por correo'''
         try:
             query = '''SELECT id_paciente, nombre, apellido, correo, contrasena
-                        FROM turnosDB.paciente WHERE correo = %s'''
+                        FROM paciente WHERE correo = %s'''
             result = DatabaseConnection.fetch_one(query, (correo,))
             if result:
                 DatabaseConnection.close_connection()
@@ -70,7 +70,7 @@ class Paciente:
         bcrypt = Bcrypt()
         try:
             hashed_password = bcrypt.generate_password_hash(paciente.contrasena).decode('utf-8')
-            query="""INSERT INTO turnosDB.paciente(nombre, apellido, correo, dni, obra_social, contrasena)
+            query="""INSERT INTO paciente(nombre, apellido, correo, dni, obra_social, contrasena)
             VALUES(%(nombre)s, %(apellido)s, %(correo)s, %(dni)s, %(obra_social)s, %(contrasena)s);"""
             params = paciente.__dict__
             params['contrasena'] = hashed_password
@@ -123,7 +123,7 @@ class Paciente:
         try:
             query = '''
                 SELECT estado 
-                FROM turnosDB.turno 
+                FROM turno 
                 WHERE fecha = %s 
                 AND id_profesional = %s 
                 AND estado = 'Reservado'
@@ -140,7 +140,7 @@ class Paciente:
     def crear_turno(cls, turno):
         """Crea un nuevo turno."""
         try:
-            query = '''INSERT INTO turnosDB.turno(fecha, hora, estado, id_paciente, id_profesional) VALUES (%(fecha)s, %(hora)s, %(estado)s, %(id_paciente)s, %(id_profesional)s)'''
+            query = '''INSERT INTO turno(fecha, hora, estado, id_paciente, id_profesional) VALUES (%(fecha)s, %(hora)s, %(estado)s, %(id_paciente)s, %(id_profesional)s)'''
             params = turno
             DatabaseConnection.execute_query(query, params=params)
             DatabaseConnection.close_connection()
@@ -152,7 +152,7 @@ class Paciente:
         """Obtiene la información de un turno por su ID."""
         try:
             query = '''SELECT id_turno, id_paciente, id_profesional, fecha, hora, estado
-            FROM turnosDB.turno
+            FROM turno
             WHERE id_turno = %s
             '''
             result = DatabaseConnection.fetch_one(query, (id_turno,))
@@ -175,14 +175,14 @@ class Paciente:
         """Cancela un turno actualizando su estado y registrando la cancelación."""
         try:
             update_turno_query = '''
-            UPDATE turnosDB.turno
+            UPDATE turno
             SET estado = 'Cancelado por Paciente'
             WHERE id_turno = %s
             '''
             DatabaseConnection.execute_query(update_turno_query, (id_turno,))
 
             registrar_cancelacion_query = '''
-            INSERT INTO turnosDB.cancelacion (id_turno, id_paciente_cancelacion, fecha_cancelacion, razon)
+            INSERT INTO cancelacion (id_turno, id_paciente_cancelacion, fecha_cancelacion, razon)
             VALUES (%s, %s, NOW(), %s)
             '''
             params = (id_turno, id_paciente, razon_cancelacion)
@@ -196,8 +196,8 @@ class Paciente:
         try:
             query = '''
             SELECT t.id_turno, t.fecha, t.Hora, t.estado, p.nombre, p.apellido
-            FROM turnosDB.turno t
-            JOIN turnosDB.profesional p ON t.id_profesional = p.id_profesional
+            FROM turno t
+            JOIN profesional p ON t.id_profesional = p.id_profesional
             WHERE t.id_paciente = %s AND t.estado = "Reservado"
             '''
             result = DatabaseConnection.fetch_all(query, (id_paciente,))
@@ -224,7 +224,7 @@ class Paciente:
     def existe_dni(cls, dni):
         '''Verifica si un paciente ya existe con un dni determinado'''
         try:
-            query = 'SELECT COUNT(*) FROM turnosDB.paciente WHERE dni = %s'
+            query = 'SELECT COUNT(*) FROM paciente WHERE dni = %s'
             result = DatabaseConnection.fetch_one(query, (dni,))
             if result is not None:
                 DatabaseConnection.close_connection()
@@ -240,7 +240,7 @@ class Paciente:
         '''Modifica la información de un paciente'''
         try:
             query = '''
-            UPDATE turnosDB.paciente
+            UPDATE paciente
             SET nombre = %s, apellido = %s, correo = %s, dni = %s, obra_social = %s
             WHERE id_paciente = %s
             '''

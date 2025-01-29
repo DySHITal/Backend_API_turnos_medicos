@@ -27,7 +27,7 @@ class Disponibilidad:
         try:
             query = '''
             SELECT Dias_Semana, Hora_Inicio, Hora_Fin
-            FROM turnosDB.disponibilidad
+            FROM disponibilidad
             WHERE id_profesional = %s
             '''
             result = DatabaseConnection.fetch_all(query, (id_profesional,))
@@ -69,7 +69,7 @@ class Disponibilidad:
     def eliminar_disponibilidades(cls, id_profesional):
         '''Elimina todas las disponibilidades de un profesional'''
         try:
-            query = 'DELETE FROM turnosDB.disponibilidad WHERE ID_Profesional = %s'
+            query = 'DELETE FROM disponibilidad WHERE ID_Profesional = %s'
             DatabaseConnection.execute_query(query, (id_profesional,))
         except Exception as e:
             raise Exception(f"Error al eliminar las disponibilidades: {str(e)}")
@@ -80,7 +80,7 @@ class Disponibilidad:
         '''Inserta nuevas disponibilidades para un profesional'''
         try:
             query = '''
-            INSERT INTO turnosDB.disponibilidad (Dias_Semana, Hora_Inicio, Hora_Fin, ID_Profesional)
+            INSERT INTO disponibilidad (Dias_Semana, Hora_Inicio, Hora_Fin, ID_Profesional)
             VALUES (%s, %s, %s, %s)
             '''
             for disponibilidad in disponibilidades:

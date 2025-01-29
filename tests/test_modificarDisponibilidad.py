@@ -1,16 +1,18 @@
 import pytest
-from flask import Flask, request, jsonify
 from app.database import DatabaseConnection
 from config import TestingConfig
 from app import init_app
-
+from app.models.disponibilidad_model import Disponibilidad
+from tests.utils import cargar_datos, eliminar_datos
 
 @pytest.fixture
 def app(autouse=True):
     app = init_app()
     app.config.from_object(TestingConfig)
     DatabaseConnection.set_config(app.config)
+    cargar_datos(DatabaseConnection)
     yield app
+    eliminar_datos(DatabaseConnection)
     DatabaseConnection.close_connection()
 
 @pytest.fixture
@@ -26,7 +28,7 @@ def test_modificar_disponibilidad_valida(client):
     CP-001: Validar que se pueda registrar la disponibilidad del profesional con un formato de datos válido.
     """
     body = {
-    "correo": "juanperez@ejemplo.com",
+    "correo": "juan.perez@ejemplo.com",
     "contrasena": "contrasena123"}
     response = client.post("/login", json=body, content_type="application/json") 
     token = response.json[0]["access_token"]
@@ -35,7 +37,7 @@ def test_modificar_disponibilidad_valida(client):
         "disponibilidades": [
             {
                 "dias_semana": "Lunes",
-                "hora_inicio": "08:00:00",
+                "hora_inicio": "8:00:00",
                 "hora_fin": "12:00:00"
             },
             {
@@ -53,6 +55,12 @@ def test_modificar_disponibilidad_valida(client):
     )
 
     assert response.status_code == 200
+    disponibilidad = Disponibilidad.get_disponibilidad(1)
+
+    for d,p in zip(disponibilidad, payload['disponibilidades']):    
+        assert d['dias_semana'] == p['dias_semana']
+        assert d['hora_inicio'] == p['hora_inicio']
+        assert d['hora_fin'] == p['hora_fin']
 
 def test_modificar_disponibilidad_invalida(client):
     """
