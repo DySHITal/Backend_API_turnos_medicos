@@ -1,4 +1,4 @@
-from utils.notificaciones import enviar_recordatorio
+from notificaciones import enviar_recordatorio
 from models.paciente_model import Paciente
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
