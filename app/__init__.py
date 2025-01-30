@@ -5,8 +5,10 @@ from flask_cors import CORS
 from .routes.auth_bp import auth_bp
 from .routes.paciente_bp import paciente_bp
 from .routes.profesional_bp import profesional_bp
-# from .routes.canales_bp import canal_bp
 from .database import DatabaseConnection
+from flask_mail import Mail
+
+mail = Mail()
 
 def init_app():
     """Crea y configura la aplicación Flask"""
@@ -16,8 +18,8 @@ def init_app():
     app.config.from_object(Config)
     DatabaseConnection.set_config(app.config)
     JWTManager(app)
+    mail.init_app(app)
     app.register_blueprint(auth_bp)
     app.register_blueprint(paciente_bp)
     app.register_blueprint(profesional_bp)
-    # app.register_blueprint(canal_bp)
     return app

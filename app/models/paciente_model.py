@@ -256,3 +256,18 @@ class Paciente:
             DatabaseConnection.close_connection()
         except Exception as e:
             raise Exception(f"Error al modificar el paciente: {e}")
+        
+    @classmethod
+    def get_turnos_proximos(cls):
+        """Obtiene los turnos programados en las próximas 24 horas"""
+        try:
+            query = """SELECT t.id_turno, t.fecha, t.hora, p.correo, p.nombre, pro.correo, pro.nombre
+                    FROM turno t
+                    JOIN paciente p ON t.id_paciente = p.id_paciente
+                    JOIN profesional pro ON t.id_profesional = pro.id_profesional
+                    WHERE t.fecha = CURDATE() + INTERVAL 1 DAY"""
+            result = DatabaseConnection.fetch_all(query)
+            DatabaseConnection.close_connection()
+            return result
+        except Exception as e:
+            raise Exception(f"Error al obtener turnos próximos: {e}")

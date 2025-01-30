@@ -17,6 +17,14 @@ class Config:
     TEMPLATE_FOLDER = "templates/"
     STATIC_FOLDER = "static/"
 
+    MAIL_SERVER = config['MAIL_SERVER']
+    MAIL_PORT = config['MAIL_PORT']
+    MAIL_USE_TLS = config['MAIL_USE_TLS']
+    MAIL_USE_SSL = config['MAIL_USE_SSL']
+    MAIL_USERNAME = config['MAIL_USERNAME']
+    MAIL_PASSWORD = config['MAIL_PASSWORD']
+    MAIL_DEFAULT_SENDER = config['MAIL_DEFAULT_SENDER']
+
 class TestingConfig:
     config = dotenv_values('.env')
 
